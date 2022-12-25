@@ -4,27 +4,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_application_1/detailproduit.dart';
-import 'package:flutter_application_1/panieruser.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_network/image_network.dart';
 
-class AcheterScreen extends StatefulWidget {
-  const AcheterScreen({super.key});
+import 'detailproduit.dart';
+
+
+
+class PanierUser extends StatefulWidget {
+  const PanierUser({super.key});
 
   @override
-  State<AcheterScreen> createState() => _AcheterScreenState();
+  State<PanierUser> createState() => _PanierUserState();
 }
 
-class _AcheterScreenState extends State<AcheterScreen> {
-  int index = 0;
+class _PanierUserState extends State<PanierUser> {
+
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
+  String deleteid ="";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: const Text('MIAGED'),
+          centerTitle: true,
+        ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             StreamBuilder(
-              stream: FirebaseFirestore.instance.collection("vetements").snapshots(),
+              stream: FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (snapshot.hasData){
                   final snap = snapshot.data!.docs;
@@ -62,6 +72,10 @@ class _AcheterScreenState extends State<AcheterScreen> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(snap[index]['prix'] + " DH"),
                               ),
+                              ElevatedButton(
+                                child: Text("Supprimer du panier"),
+                                onPressed: () => supprimerpanier(snap[index].id),
+                              ),
                             ], 
                           ),
                         )
@@ -78,49 +92,12 @@ class _AcheterScreenState extends State<AcheterScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index,
-        onTap: switchpage,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Acheter',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Panier',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-      ),
-
     );
   }
 
-  void switchpage(int index) {
-    setState(() {
-      index = index;
-    });
-    if(index==0){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AcheterScreen(),),
-      );
-    }
-    else if(index==1){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PanierUser(),),
-      );
-    }
-    else if(index==2){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PanierUser(),),
-      );
-    }
+  void supprimerpanier(String id) {
+    log(id);
+    FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").doc(id).delete();
+    log("deleted");
   }
 }
