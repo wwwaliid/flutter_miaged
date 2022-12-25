@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'dart:developer';
+
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,17 +78,14 @@ class _LoginWidgetState extends State<LoginWidget> {
       child: Center(
           child: Column(
             children: <Widget>[
-              Center(
-                child: Text('aaaaaaaaaaaaaaaaaaa'),
-              ),
               Padding( 
                 padding: EdgeInsets.all(15),
                 child: TextField(
                   controller: emailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'User Name',
-                    hintText: 'Enter Your Name',
+                    labelText: 'Login',
+                    hintText: 'Enter Login',
                   )
                 ),
               ),
@@ -116,10 +115,15 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
   
   Future signIn() async{
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email : emailController.text.trim(),
-      password : passwordController.text.trim(),
-    );
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email : emailController.text.trim(),
+        password : passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch(e){
+      log("Invalid login or password");
+    }
+    
   }
 }
 
