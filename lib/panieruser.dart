@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/profil.dart';
 import 'package:image_network/image_network.dart';
 
+import 'acheterscreen.dart';
 import 'detailproduit.dart';
 
 
@@ -21,8 +23,7 @@ class PanierUser extends StatefulWidget {
 class _PanierUserState extends State<PanierUser> {
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
-  String deleteid ="";
-
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +74,10 @@ class _PanierUserState extends State<PanierUser> {
                                 child: Text(snap[index]['prix'] + " DH"),
                               ),
                               ElevatedButton(
-                                child: Text("Supprimer du panier"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                ),
+                                child: Icon(Icons.close),
                                 onPressed: () => supprimerpanier(snap[index].id),
                               ),
                             ], 
@@ -92,6 +96,24 @@ class _PanierUserState extends State<PanierUser> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        onTap: switchpage,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Acheter',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: 'Panier',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+      ),
     );
   }
 
@@ -99,5 +121,28 @@ class _PanierUserState extends State<PanierUser> {
     log(id);
     FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").doc(id).delete();
     log("deleted");
+  }
+  void switchpage(int index) {
+    setState(() {
+      index = index;
+    });
+    if(index==0){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AcheterScreen(),),
+      );
+    }
+    else if(index==1){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PanierUser(),),
+      );
+    }
+    else if(index==2){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Profil(),),
+      );
+    }
   }
 }
