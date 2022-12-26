@@ -24,6 +24,24 @@ class _PanierUserState extends State<PanierUser> {
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   int index = 0;
+  int total=0;
+
+@override
+  void initState() {
+    index = 0;
+    super.initState();
+    Stream<QuerySnapshot<Map<String, dynamic>>> products = FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").snapshots();
+    products.forEach((field) {
+      field.docs.asMap().forEach((index, data) {
+        setState(() {
+          total += int.parse(field.docs[index]["prix"]);
+        });
+        log(total.toString());
+      });
+    });
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +52,10 @@ class _PanierUserState extends State<PanierUser> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text("Somme du panier : "+total.toString()+" DH"),
+            ),
             StreamBuilder(
               stream: FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -78,7 +100,7 @@ class _PanierUserState extends State<PanierUser> {
                                   primary: Colors.red,
                                 ),
                                 child: Icon(Icons.close),
-                                onPressed: () => supprimerpanier(snap[index].id),
+                                onPressed: () => supprimerpanier(snap[index].id, snap[index]['prix']),
                               ),
                             ], 
                           ),
@@ -117,10 +139,13 @@ class _PanierUserState extends State<PanierUser> {
     );
   }
 
-  void supprimerpanier(String id) {
+  void supprimerpanier(String id, String prix) {
     log(id);
     FirebaseFirestore.instance.collection("panier").doc(uid).collection("produits").doc(id).delete();
     log("deleted");
+    setState(() {
+      total -= int.parse(prix);
+    });
   }
   void switchpage(int index) {
     setState(() {

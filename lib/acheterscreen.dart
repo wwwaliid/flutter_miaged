@@ -22,75 +22,311 @@ class _AcheterScreenState extends State<AcheterScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
-            title: TabBar(
+            title: Text("MIAGED"),
+            centerTitle: true,
+            bottom: TabBar(
               tabs: [
                 Tab(text: "Tous"),
                 Tab(text: "Tshirt"),
-                Tab(text:"Casquette"),
+                Tab(text:"Jacket"),
+                Tab(text:"Pantalons"),
+                Tab(text:"Baskets"),
               ],
             ),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("vetements").snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    if (snapshot.hasData){
-                      final snap = snapshot.data!.docs;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.all(8.0),
-                        primary: false,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
-                          return GestureDetector(
-                            onTap:() {
-                              log("clicked");
-                              Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DetailProduit(produit),),
-                              );
-                            },
-                            child: Card(
-                              margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(snap[index]['titre']),
+          body: TabBarView(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("vetements").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData){
+                          final snap = snapshot.data!.docs;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(8.0),
+                            primary: false,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
+                              return GestureDetector(
+                                onTap:() {
+                                  log("clicked");
+                                  Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DetailProduit(produit),),
+                                  );
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['titre']),
+                                      ),
+                                      ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
+                                      //Image.network('../images.tshirt.jpg',height:150),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Taille : "+snap[index]['taille']),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['prix'] + " DH"),
+                                      ),
+                                    ], 
                                   ),
-                                  ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
-                                  //Image.network('../images.tshirt.jpg',height:150),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text("Taille : "+snap[index]['taille']),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(snap[index]['prix'] + " DH"),
-                                  ),
-                                ], 
-                              ),
-                            )
-                          ); 
+                                )
+                              ); 
+                          }
+                        );
+                        }
+                        else{
+                          return Text("No data");
+                        }
                       }
-                      
-                    );
-                    }
-                    else{
-                      return Text("ggggg");
-                    }
-                  }
-                )
-              ],
-            ),
+                    )
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("vetements").where("categorie", isEqualTo: "tshirt").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData){
+                          final snap = snapshot.data!.docs;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(8.0),
+                            primary: false,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
+                              return GestureDetector(
+                                onTap:() {
+                                  log("clicked");
+                                  Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DetailProduit(produit),),
+                                  );
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['titre']),
+                                      ),
+                                      ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
+                                      //Image.network('../images.tshirt.jpg',height:150),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Taille : "+snap[index]['taille']),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['prix'] + " DH"),
+                                      ),
+                                    ], 
+                                  ),
+                                )
+                              ); 
+                          }
+                        );
+                        }
+                        else{
+                          return Text("No data");
+                        }
+                      }
+                    )
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("vetements").where("categorie", isEqualTo: "jacket").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData){
+                          final snap = snapshot.data!.docs;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(8.0),
+                            primary: false,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
+                              return GestureDetector(
+                                onTap:() {
+                                  log("clicked");
+                                  Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DetailProduit(produit),),
+                                  );
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['titre']),
+                                      ),
+                                      ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
+                                      //Image.network('../images.tshirt.jpg',height:150),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Taille : "+snap[index]['taille']),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['prix'] + " DH"),
+                                      ),
+                                    ], 
+                                  ),
+                                )
+                              ); 
+                          }
+                        );
+                        }
+                        else{
+                          return Text("No data");
+                        }
+                      }
+                    )
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("vetements").where("categorie", isEqualTo: "pantalon").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData){
+                          final snap = snapshot.data!.docs;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(8.0),
+                            primary: false,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
+                              return GestureDetector(
+                                onTap:() {
+                                  log("clicked");
+                                  Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DetailProduit(produit),),
+                                  );
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['titre']),
+                                      ),
+                                      ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
+                                      //Image.network('../images.tshirt.jpg',height:150),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Taille : "+snap[index]['taille']),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['prix'] + " DH"),
+                                      ),
+                                    ], 
+                                  ),
+                                )
+                              ); 
+                          }
+                        );
+                        }
+                        else{
+                          return Text("No data");
+                        }
+                      }
+                    )
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("vetements").where("categorie", isEqualTo: "baskets").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData){
+                          final snap = snapshot.data!.docs;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(8.0),
+                            primary: false,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              // return Text(snap[index]['titre'] + "  " + snap[index]['taille'] + "  " + snap[index]['prix']);
+                              return GestureDetector(
+                                onTap:() {
+                                  log("clicked");
+                                  Map produit = {"titre" : snap[index]['titre'], "taille" : snap[index]['taille'], "prix" : snap[index]['prix'], "imageurl" : snap[index]['imageurl'], "marque" : snap[index]["marque"]};
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => DetailProduit(produit),),
+                                  );
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['titre']),
+                                      ),
+                                      ImageNetwork(image: snap[index]['imageurl'], height: 150, width: 150,),
+                                      //Image.network('../images.tshirt.jpg',height:150),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Taille : "+snap[index]['taille']),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(snap[index]['prix'] + " DH"),
+                                      ),
+                                    ], 
+                                  ),
+                                )
+                              ); 
+                          }
+                        );
+                        }
+                        else{
+                          return Text("No data");
+                        }
+                      }
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
+          
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index,
             onTap: switchpage,

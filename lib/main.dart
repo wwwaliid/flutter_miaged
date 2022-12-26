@@ -32,10 +32,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MIAGED',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('MIAGED'),
-          centerTitle: true,
-        ),
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot){
@@ -75,44 +71,51 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-          child: Column(
-            children: <Widget>[
-              Padding( 
-                padding: EdgeInsets.all(15),
-                child: TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Login',
-                    hintText: 'Enter Login',
-                  )
-                ),
-              ),
-              Padding( 
-                padding: EdgeInsets.all(15),
-                child: TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter Password',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MIAGED'),
+        centerTitle: true,
+      ),
+      body: Container(
+        child: Center(
+            child: Column(
+              children: <Widget>[
+                Padding( 
+                  padding: EdgeInsets.all(15),
+                  child: TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Login',
+                      hintText: 'Enter Login',
+                    )
                   ),
-                ), 
-              ),
-              Padding( 
-                padding: EdgeInsets.all(15),
-                child: ElevatedButton(
-                  child: Text("Se connecter"),
-                  onPressed: signIn,
-                ), 
-              ),
-            ],
+                ),
+                Padding( 
+                  padding: EdgeInsets.all(15),
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                      hintText: 'Enter Password',
+                    ),
+                  ), 
+                ),
+                Padding( 
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    child: Text("Se connecter"),
+                    onPressed: signIn,
+                  ), 
+                ),
+              ],
+            ),
           ),
-        ),
+      )
     );
+    
   }
   
   Future signIn() async{

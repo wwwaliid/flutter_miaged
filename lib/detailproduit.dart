@@ -18,12 +18,27 @@ class DetailProduit extends StatelessWidget {
         ),
       body: Column(
         children: [
-          Text(produit["titre"]),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text(produit["titre"]),
+          ),
           ImageNetwork(image: produit["imageurl"], height: 150, width: 150,),
-          Text("Marque : " + produit["marque"]),
-          Text("Taille : " + produit["taille"]),
-          Text(produit["prix"] + " DH"),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text("Marque : " + produit["marque"]),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text("Taille : " + produit["taille"]),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text(produit["prix"] + " DH"),
+          ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green,
+            ),
             child: Text("Ajouter au panier"),
             onPressed: ajouterpanier,
           ), 
